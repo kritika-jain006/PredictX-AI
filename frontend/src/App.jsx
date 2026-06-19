@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Sidebar from './components/Sidebar';
 import Overview from './components/Overview';
+import Alerts from './components/Alerts';
 import DeviceList from './components/DeviceList';
 import DeviceDetail from './components/DeviceDetail';
+import PredictionView from './components/Predictions';
+import SystemHealth from './components/SystemHealth';
 import TelemetrySimulator from './components/TelemetrySimulator';
 import MaintenanceOptimization from './components/MaintenanceOptimization';
 import { Activity, Settings, RefreshCw } from 'lucide-react';
@@ -10,6 +13,7 @@ import { Activity, Settings, RefreshCw } from 'lucide-react';
 function App() {
   const [currentView, setView] = useState('overview');
   const [selectedDeviceId, setSelectedDeviceId] = useState(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   // Settings & Config
   const [apiUrl, setApiUrl] = useState('http://localhost:5000/api');
@@ -56,12 +60,18 @@ function App() {
     switch (currentView) {
       case 'overview':
         return 'system overview';
+      case 'alerts':
+        return 'active system alerts';
       case 'devices':
         return selectedDeviceId ? 'device analytics' : 'registered devices';
+      case 'predictions':
+        return 'ml failure predictions';
       case 'maintenance':
         return 'maintenance optimization';
       case 'simulator':
         return 'telemetry agent simulator';
+      case 'health':
+        return 'platform & ml health';
       default:
         return 'predictx dashboard';
     }
@@ -77,7 +87,7 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       {/* Sidebar Navigation */}
       <Sidebar 
         currentView={currentView} 
@@ -85,6 +95,8 @@ function App() {
           setView(view);
           if (view !== 'devices') setSelectedDeviceId(null); // Reset detail view on route change
         }}
+        isCollapsed={sidebarCollapsed}
+        setIsCollapsed={setSidebarCollapsed}
         backendOnline={backendOnline}
         summary={summary}
       />
@@ -136,6 +148,10 @@ function App() {
           />
         )}
 
+        {currentView === 'alerts' && (
+          <Alerts devices={devices} setView={setView} setSelectedDeviceId={setSelectedDeviceId} />
+        )}
+
         {currentView === 'devices' && (
           selectedDeviceId ? (
             <DeviceDetail 
@@ -151,6 +167,10 @@ function App() {
           )
         )}
 
+        {currentView === 'predictions' && (
+          <PredictionView devices={devices} />
+        )}
+
         {currentView === 'maintenance' && (
           <MaintenanceOptimization devices={devices} />
         )}
@@ -160,6 +180,10 @@ function App() {
             apiUrl={apiUrl}
             onTriggerRefresh={fetchDashboardData}
           />
+        )}
+
+        {currentView === 'health' && (
+          <SystemHealth backendOnline={backendOnline} />
         )}
       </main>
     </div>
