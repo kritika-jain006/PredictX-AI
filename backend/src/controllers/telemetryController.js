@@ -1,11 +1,27 @@
 const Telemetry = require("../models/Telemetry");
 const Prediction = require("../models/Prediction");
+const Device = require("../models/Device");
 
 const { getPrediction } = require("../services/mlService");
 const { generateRecommendation } = require("../services/recommendationService");
 
 const receiveTelemetry = async (req, res) => {
     try {
+        // Ensure device exists in database
+        let device = await Device.findOne({ deviceId: req.body.deviceId });
+        if (!device) {
+            device = await Device.create({
+                deviceId: req.body.deviceId,
+                hostname: req.body.hostname || `PC-${req.body.deviceId}`,
+                manufacturer: req.body.manufacturer || "Dell",
+                model: req.body.model || "Latitude 5420",
+                cpu: req.body.cpu || "Intel Core i5-1135G7",
+                ram: req.body.ram || "16GB DDR4",
+                storage: req.body.storage || "512GB NVMe SSD",
+                os: req.body.os || "Windows 11 Pro"
+            });
+        }
+
         // Save incoming telemetry
         const telemetry = await Telemetry.create(req.body);
 

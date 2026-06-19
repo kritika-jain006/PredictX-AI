@@ -63,12 +63,17 @@ const getDeviceDetail = async (req, res) => {
             .sort({ timestamp: -1 })
             .limit(10);
 
+        const recentPredictions = await Prediction.find({ deviceId: req.params.deviceId })
+            .sort({ timestamp: -1 })
+            .limit(10);
+
         const latestPrediction = await Prediction.findOne({ deviceId: req.params.deviceId })
             .sort({ timestamp: -1 });
 
         res.status(200).json({
             device,
             recentTelemetry,
+            recentPredictions: recentPredictions || [],
             latestPrediction: latestPrediction || null
         });
     } catch (error) {
