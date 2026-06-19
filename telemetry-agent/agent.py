@@ -6,23 +6,30 @@ import subprocess
 import re
 import time
 import platform
-from datetime import datetime
+from datetime import datetime, timezone
 
-API_URL = "http://localhost:5001/api/telemetry"
+API_URL = "http://localhost:5000/api/telemetry"
 
 
 def get_battery_health():
+    # system_profiler is macOS-only; skip on Windows/Linux
+    if platform.system() == "Darwin":
+        try:
+            output = subprocess.check_output(
+                ["system_profiler", "SPPowerDataType"],
+                text=True
+            )
+            match = re.search(r"Maximum Capacity:\s*(\d+)%", output)
+            if match:
+                return int(match.group(1))
+        except:
+            pass
+
+    # Fallback: use psutil battery percent if available
     try:
-        output = subprocess.check_output(
-            ["system_profiler", "SPPowerDataType"],
-            text=True
-        )
-
-        match = re.search(r"Maximum Capacity:\s*(\d+)%", output)
-
-        if match:
-            return int(match.group(1))
-
+        bat = psutil.sensors_battery()
+        if bat:
+            return round(bat.percent)
     except:
         pass
 
@@ -65,7 +72,7 @@ def collect_metrics():
 
         "ramCapacityGB": ramCapacityGB,
 
-        "diskUsage": round(psutil.disk_usage("/").percent, 2),
+        "diskUsage": round(psutil.disk_usage("C:\\" if platform.system() == "Windows" else "/").percent, 2),
 
         "diskReadMBps": diskReadMBps,
 
@@ -89,7 +96,7 @@ def collect_metrics():
 
         "gpuTemp": 0,
 
-        "timestamp": datetime.utcnow().isoformat() + "Z"
+        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     }
 
     return data
