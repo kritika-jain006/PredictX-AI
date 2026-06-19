@@ -5,6 +5,7 @@ import requests
 import subprocess
 import re
 import time
+import platform
 from datetime import datetime
 
 API_URL = "http://localhost:5001/api/telemetry"
@@ -32,6 +33,27 @@ def collect_metrics():
 
     battery = psutil.sensors_battery()
 
+    ramCapacityGB = round(
+        psutil.virtual_memory().total / (1024 ** 3),
+        2
+    )
+
+    osVersion = platform.platform()
+
+    processCount = len(psutil.pids())
+
+    diskIO = psutil.disk_io_counters()
+
+    diskReadMBps = round(
+        diskIO.read_bytes / (1024 * 1024),
+        2
+    )
+
+    diskWriteMBps = round(
+        diskIO.write_bytes / (1024 * 1024),
+        2
+    )
+
     data = {
         "deviceId": socket.gethostname(),
 
@@ -41,7 +63,17 @@ def collect_metrics():
 
         "ramUsage": round(psutil.virtual_memory().percent, 2),
 
+        "ramCapacityGB": ramCapacityGB,
+
         "diskUsage": round(psutil.disk_usage("/").percent, 2),
+
+        "diskReadMBps": diskReadMBps,
+
+        "diskWriteMBps": diskWriteMBps,
+
+        "processCount": processCount,
+
+        "osVersion": osVersion,
 
         "batteryHealth": get_battery_health(),
 
