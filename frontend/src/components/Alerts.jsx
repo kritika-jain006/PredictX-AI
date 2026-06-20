@@ -68,9 +68,13 @@ export default function Alerts({ devices, setView, setSelectedDeviceId }) {
 
   const allAlerts = [...criticalAlerts, ...warningAlerts, ...infoAlerts.slice(0, 5)];
 
-  const handleAction = (deviceId) => {
-    setSelectedDeviceId(deviceId);
-    setView('devices');
+  const handleAction = (action, deviceId) => {
+    if (action === 'Schedule Maintenance' || action === 'Emergency Hardware Swap') {
+      setView('maintenance');
+    } else {
+      setSelectedDeviceId(deviceId);
+      setView('devices');
+    }
   };
 
   return (
@@ -140,7 +144,7 @@ export default function Alerts({ devices, setView, setSelectedDeviceId }) {
                 <button 
                   className={`btn ${alert.type === 'info' ? 'btn-secondary' : 'btn-primary'}`}
                   style={{ whiteSpace: 'nowrap', padding: '10px 20px' }}
-                  onClick={() => handleAction(alert.deviceId)}
+                  onClick={() => handleAction(alert.action, alert.deviceId)}
                 >
                   {alert.action}
                 </button>
