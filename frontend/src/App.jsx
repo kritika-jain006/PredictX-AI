@@ -8,7 +8,7 @@ import PredictionView from './components/Predictions';
 import SystemHealth from './components/SystemHealth';
 import TelemetrySimulator from './components/TelemetrySimulator';
 import MaintenanceOptimization from './components/MaintenanceOptimization';
-import { Activity, Settings, RefreshCw } from 'lucide-react';
+import { Activity, Settings } from 'lucide-react';
 
 function App() {
   const [currentView, setView] = useState('overview');
@@ -173,20 +173,6 @@ function App() {
           </div>
           
           <div className="header-actions">
-            {/* Refresh status */}
-            <button 
-              className="btn btn-secondary" 
-              onClick={fetchDashboardData}
-              disabled={refreshing}
-              style={{ padding: '6px 10px', display: 'flex', alignItems: 'center', gap: '6px' }}
-            >
-              <RefreshCw 
-                size={14} 
-                style={{ animation: refreshing ? 'spin 1s linear infinite' : 'none' }}
-              />
-              sync
-            </button>
-
             {/* Editable API URL */}
             <div className="api-badge">
               <Settings size={14} />
