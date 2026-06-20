@@ -41,9 +41,9 @@ export default function DeviceDetail({ deviceId, onBack, apiUrl, latestUpdate })
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchDeviceData = useCallback(async () => {
+  const fetchDeviceData = useCallback(async (isBackground = false) => {
     try {
-      setLoading(true);
+      if (!isBackground) setLoading(true);
       setError(null);
       const res = await fetch(`${apiUrl}/dashboard/devices/${deviceId}`);
       if (!res.ok) {
@@ -53,14 +53,20 @@ export default function DeviceDetail({ deviceId, onBack, apiUrl, latestUpdate })
       setData(json);
     } catch (err) {
       console.error(err);
-      setError(err.message);
+      if (!isBackground) setError(err.message);
     } finally {
-      setLoading(false);
+      if (!isBackground) setLoading(false);
     }
   }, [deviceId, apiUrl]);
 
   useEffect(() => {
-    fetchDeviceData();
+    fetchDeviceData(false); // Initial load with spinner
+    
+    const interval = setInterval(() => {
+      fetchDeviceData(true); // Background poll every 5 seconds
+    }, 5000);
+    
+    return () => clearInterval(interval);
   }, [fetchDeviceData]);
 
   // Handle incoming real-time telemetry from Server-Sent Events stream
@@ -267,7 +273,24 @@ export default function DeviceDetail({ deviceId, onBack, apiUrl, latestUpdate })
     },
     plugins: {
       legend: {
-        labels: { color: '#f3f4f6', font: { family: 'JetBrains Mono', size: 11 } }
+        labels: { 
+          color: '#f3f4f6', 
+          font: { family: 'JetBrains Mono', size: 11 },
+          boxWidth: 16,
+          boxHeight: 12,
+          generateLabels: (chart) => {
+            const datasets = chart.data.datasets;
+            return datasets.map((dataset, i) => ({
+              text: dataset.label,
+              fillStyle: dataset.borderColor,
+              strokeStyle: dataset.borderColor,
+              fontColor: '#f3f4f6',
+              lineWidth: 1,
+              hidden: !chart.isDatasetVisible(i),
+              datasetIndex: i
+            }));
+          }
+        }
       },
       tooltip: {
         titleFont: { family: 'JetBrains Mono' },
@@ -452,29 +475,29 @@ export default function DeviceDetail({ deviceId, onBack, apiUrl, latestUpdate })
             <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#fff', textTransform: 'lowercase', marginBottom: '16px' }}>live_telemetry</h3>
             {current ? (
               <div className="telemetry-widgets">
-                <div className={`widget-card ${getMetricStatus('cpuTemp', current.cpuTemp)}`}>
+                <div className={`widget-card ${getMetricStatus('cpuTemp', current.cpuTemp)}`} style={{ background: `linear-gradient(to right, rgba(240, 74, 74, 0.2) ${Math.min(current.cpuTemp, 100)}%, rgba(0,0,0,0.15) ${Math.min(current.cpuTemp, 100)}%)` }}>
                   <span className="w-label">cpu_temp</span>
                   <span className="w-value">
                     {current.cpuTemp}°c
                   </span>
                 </div>
-                <div className={`widget-card ${getMetricStatus('cpuUsage', current.cpuUsage)}`}>
+                <div className={`widget-card ${getMetricStatus('cpuUsage', current.cpuUsage)}`} style={{ background: `linear-gradient(to right, rgba(255, 176, 32, 0.2) ${current.cpuUsage}%, rgba(0,0,0,0.15) ${current.cpuUsage}%)` }}>
                   <span className="w-label">cpu_usage</span>
                   <span className="w-value">{current.cpuUsage}%</span>
                 </div>
-                <div className={`widget-card ${getMetricStatus('ramUsage', current.ramUsage)}`}>
+                <div className={`widget-card ${getMetricStatus('ramUsage', current.ramUsage)}`} style={{ background: `linear-gradient(to right, rgba(136, 136, 136, 0.2) ${current.ramUsage}%, rgba(0,0,0,0.15) ${current.ramUsage}%)` }}>
                   <span className="w-label">ram_usage</span>
                   <span className="w-value">{current.ramUsage}%</span>
                 </div>
-                <div className={`widget-card ${getMetricStatus('diskUsage', current.diskUsage)}`}>
+                <div className={`widget-card ${getMetricStatus('diskUsage', current.diskUsage)}`} style={{ background: `linear-gradient(to right, rgba(240, 74, 74, 0.2) ${current.diskUsage}%, rgba(0,0,0,0.15) ${current.diskUsage}%)` }}>
                   <span className="w-label">disk</span>
                   <span className="w-value">{current.diskUsage}%</span>
                 </div>
-                <div className={`widget-card ${getMetricStatus('fanRpm', current.fanRpm)}`}>
+                <div className={`widget-card ${getMetricStatus('fanRpm', current.fanRpm)}`} style={{ background: `linear-gradient(to right, rgba(56, 189, 248, 0.2) ${Math.min((current.fanRpm / 6000) * 100, 100)}%, rgba(0,0,0,0.15) ${Math.min((current.fanRpm / 6000) * 100, 100)}%)` }}>
                   <span className="w-label">fan_rpm</span>
                   <span className="w-value">{current.fanRpm}</span>
                 </div>
-                <div className={`widget-card ${getMetricStatus('batteryHealth', current.batteryHealth)}`}>
+                <div className={`widget-card ${getMetricStatus('batteryHealth', current.batteryHealth)}`} style={{ background: `linear-gradient(to right, rgba(60, 208, 112, 0.2) ${current.batteryHealth}%, rgba(0,0,0,0.15) ${current.batteryHealth}%)` }}>
                   <span className="w-label">battery</span>
                   <span className="w-value">{current.batteryHealth}%</span>
                 </div>
