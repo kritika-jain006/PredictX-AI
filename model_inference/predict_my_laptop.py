@@ -1,12 +1,23 @@
+import sys
+import os
+import time
+
+def print_header(title):
+    print("="*70)
+    print(f" {title} ".center(70, '='))
+    print("="*70 + "\n")
+
+print_header("DELL PREDICTIVE MAINTENANCE BACKGROUND MONITOR")
+print("Initializing modules and loading ML models. Please wait...")
+
 import pandas as pd
 import numpy as np
 import joblib
 import psutil
-import time
 import platform
 import warnings
-import sys
-import os
+from plyer import notification
+import argparse
 
 warnings.filterwarnings('ignore')
 
@@ -17,17 +28,6 @@ except Exception as e:
     print(f"Error loading model: {e}")
     sys.exit(1)
 
-def print_header(title):
-    print("="*70)
-    print(f" {title} ".center(70, '='))
-    print("="*70 + "\n")
-
-print_header("DELL PREDICTIVE MAINTENANCE BACKGROUND MONITOR")
-
-import argparse
-
-print("Welcome to the Background Hardware Monitor!")
-
 parser = argparse.ArgumentParser(description="Dell Predictive Maintenance Dashboard")
 parser.add_argument("--interval", type=int, default=2, help="Scanning interval in seconds (default: 2)")
 args = parser.parse_args()
@@ -36,6 +36,8 @@ interval = args.interval
 
 device_name = platform.node() or "Unknown Dell Device"
 os_version = f"{platform.system()} {platform.release()}"
+
+first_run = True
 
 while True:
     try:
@@ -142,6 +144,10 @@ while True:
                 root_cause = "General Wear & Tear"
                 pred_component = "Motherboard / Generic"
                 recommendation = "CRITICAL ACTION: Severe failure signals detected. Schedule maintenance immediately."
+            elif risk_level == "Moderate":
+                root_cause = "Early Warning Signs"
+                pred_component = "Multiple"
+                recommendation = "SUGGESTION: Consider refreshing background apps, cleaning cache, or performing basic disk cleanup to improve smoothness."
             else:
                 root_cause = "None"
                 pred_component = "None"
@@ -191,8 +197,29 @@ while True:
         # Explicit Backup Suggestion as requested
         if risk_level in ["High", "Critical"]:
             print(">>> CRITICAL SUGGESTION: PLEASE TAKE A FULL BACKUP TO THE CLOUD IMMEDIATELY. <<<")
+            try:
+                notification.notify(
+                    title=f"PredictX-AI: {risk_level.upper()} RISK",
+                    message="Critical hardware failure signals detected. Check dashboard.",
+                    app_name="Dell Predictive Maintenance",
+                    timeout=5
+                )
+            except Exception:
+                pass
         print("="*70 + "\n")
         
+        if first_run:
+            first_run = False
+            user_input = input("Enter update interval in seconds (press Enter for default 2s): ")
+            if user_input.strip() == "":
+                interval = 2
+            else:
+                try:
+                    interval = int(user_input)
+                except ValueError:
+                    print("Invalid input. Using default 2 seconds.")
+                    interval = 2
+
         print(f"Live Updating Every {interval}s... Press Ctrl+C to Stop.")
 
         time.sleep(max(0.1, interval - 0.1)) # -0.1 because disk IO check takes 0.1s
