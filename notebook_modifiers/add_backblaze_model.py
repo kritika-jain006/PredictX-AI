@@ -1,7 +1,7 @@
 import json
 import nbformat as nbf
 
-notebook_path = 'Hardware_failure.ipynb'
+notebook_path = '../Hardware_failure.ipynb'
 
 with open(notebook_path, 'r', encoding='utf-8') as f:
     nb = json.load(f)
@@ -90,8 +90,8 @@ print(f"Best parameters found for Backblaze: {random_search_bb.best_params_}")
 xgb_bb_model = random_search_bb.best_estimator_
 y_pred_bb = xgb_bb_model.predict(X_test_bb)
 
-joblib.dump(xgb_bb_model, 'model_artifacts/xgb_backblaze_model.joblib')
-joblib.dump(X_bb.columns.tolist(), 'model_artifacts/backblaze_feature_columns.joblib')
+joblib.dump(xgb_bb_model, '../model_artifacts/xgb_backblaze_model.joblib')
+joblib.dump(X_bb.columns.tolist(), '../model_artifacts/backblaze_feature_columns.joblib')
 print("Backblaze model saved!")
 """
 nb['cells'].append({

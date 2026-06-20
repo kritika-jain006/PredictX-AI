@@ -19,8 +19,8 @@ app = FastAPI(
 
 # Load Model globally so it runs instantly
 try:
-    model = joblib.load('model_artifacts/xgb_telemetry_model.joblib')
-    model_cols = joblib.load('model_artifacts/telemetry_feature_columns.joblib')
+    model = joblib.load('../model_artifacts/xgb_telemetry_model.joblib')
+    model_cols = joblib.load('../model_artifacts/telemetry_feature_columns.joblib')
 except Exception as e:
     print(f"Error loading ML model on boot: {e}")
 

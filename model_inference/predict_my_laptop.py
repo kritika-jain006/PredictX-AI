@@ -11,8 +11,8 @@ import os
 warnings.filterwarnings('ignore')
 
 try:
-    model = joblib.load('model_artifacts/xgb_telemetry_model.joblib')
-    model_cols = joblib.load('model_artifacts/telemetry_feature_columns.joblib')
+    model = joblib.load('../model_artifacts/xgb_telemetry_model.joblib')
+    model_cols = joblib.load('../model_artifacts/telemetry_feature_columns.joblib')
 except Exception as e:
     print(f"Error loading model: {e}")
     sys.exit(1)
@@ -29,7 +29,7 @@ import argparse
 print("Welcome to the Background Hardware Monitor!")
 
 parser = argparse.ArgumentParser(description="Dell Predictive Maintenance Dashboard")
-parser.add_argument("--interval", type=int, default=15, help="Scanning interval in seconds (default: 15)")
+parser.add_argument("--interval", type=int, default=2, help="Scanning interval in seconds (default: 2)")
 args = parser.parse_args()
 
 interval = args.interval

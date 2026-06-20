@@ -1,6 +1,6 @@
 import json
 
-with open('Hardware_failure.ipynb', 'r', encoding='utf-8') as f:
+with open('../Hardware_failure.ipynb', 'r', encoding='utf-8') as f:
     nb = json.load(f)
 
 for cell in nb['cells']:
@@ -98,7 +98,7 @@ xgb_ai4i_model = random_search_ai4i.best_estimator_
 """
             cell['source'] = [line + '\n' if i < len(new_source.split('\n'))-1 else line for i, line in enumerate(new_source.split('\n'))]
 
-with open('Hardware_failure.ipynb', 'w', encoding='utf-8') as f:
+with open('../Hardware_failure.ipynb', 'w', encoding='utf-8') as f:
     json.dump(nb, f, indent=1)
 
 print("Injected Hyperparameter tuning into the notebook.")

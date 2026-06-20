@@ -1,7 +1,7 @@
 
 import json
 
-with open('Hardware_failure.ipynb', 'r', encoding='utf-8') as f:
+with open('../Hardware_failure.ipynb', 'r', encoding='utf-8') as f:
     nb = json.load(f)
 
 plot_counter = 1
@@ -20,7 +20,7 @@ for cell in nb['cells']:
                 source_lines.append(line)
         cell['source'] = source_lines
 
-with open('Hardware_failure.ipynb', 'w', encoding='utf-8') as f:
+with open('../Hardware_failure.ipynb', 'w', encoding='utf-8') as f:
     json.dump(nb, f, indent=1)
 
 print("Added savefig to notebook.")
