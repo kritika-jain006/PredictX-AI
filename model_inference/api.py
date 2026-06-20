@@ -37,12 +37,12 @@ class TelemetryPayload(BaseModel):
 
 def auto_detect_hardware():
     io_start = psutil.disk_io_counters()
-    time.sleep(1.0)
+    time.sleep(0.1)
     io_end = psutil.disk_io_counters()
 
     if io_start and io_end:
-        d_read = round((io_end.read_bytes - io_start.read_bytes) / (1024**2), 2)
-        d_write = round((io_end.write_bytes - io_start.write_bytes) / (1024**2), 2)
+        d_read = round(((io_end.read_bytes - io_start.read_bytes) * 10) / (1024**2), 2)
+        d_write = round(((io_end.write_bytes - io_start.write_bytes) * 10) / (1024**2), 2)
     else:
         d_read, d_write = 50.0, 40.0
 

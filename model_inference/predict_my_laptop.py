@@ -44,12 +44,12 @@ while True:
         process_count = len(psutil.pids())
 
         io_start = psutil.disk_io_counters()
-        time.sleep(1.0)
+        time.sleep(0.1)
         io_end = psutil.disk_io_counters()
 
         if io_start and io_end:
-            disk_read = round((io_end.read_bytes - io_start.read_bytes) / (1024**2), 2)
-            disk_write = round((io_end.write_bytes - io_start.write_bytes) / (1024**2), 2)
+            disk_read = round(((io_end.read_bytes - io_start.read_bytes) * 10) / (1024**2), 2)
+            disk_write = round(((io_end.write_bytes - io_start.write_bytes) * 10) / (1024**2), 2)
         else:
             disk_read, disk_write = 5.0, 5.0
 
@@ -195,7 +195,7 @@ while True:
         
         print(f"Live Updating Every {interval}s... Press Ctrl+C to Stop.")
 
-        time.sleep(max(1, interval - 1)) # -1 because disk IO check takes 1s
+        time.sleep(max(0.1, interval - 0.1)) # -0.1 because disk IO check takes 0.1s
 
     except KeyboardInterrupt:
         print("\nMonitoring stopped by user.")
