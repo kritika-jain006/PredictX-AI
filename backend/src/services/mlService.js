@@ -37,11 +37,14 @@ const getPrediction = async (telemetry) => {
             // Map python risk level (Low, Moderate, High, Critical) to backend (low, warning, critical)
             let mappedRisk = "low";
             const pythonRisk = (diag.risk_level || "Low").toLowerCase();
-            if (pythonRisk === "critical" || pythonRisk === "high") {
+            if (pythonRisk === "critical") {
                 mappedRisk = "critical";
-            } else if (pythonRisk === "moderate" || pythonRisk === "warning") {
+            } else if (pythonRisk === "high") {
                 mappedRisk = "warning";
+            } else {
+                mappedRisk = "low";
             }
+             
 
             return {
                 healthScore: Math.round(diag.health_score),
