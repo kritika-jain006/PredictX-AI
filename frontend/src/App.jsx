@@ -173,17 +173,6 @@ function App() {
           </div>
           
           <div className="header-actions">
-            {/* Editable API URL */}
-            <div className="api-badge">
-              <Settings size={14} />
-              <span>api url:</span>
-              <input 
-                type="text" 
-                value={apiUrl}
-                onChange={(e) => setApiUrl(e.target.value)}
-                placeholder="http://localhost:5000/api"
-              />
-            </div>
           </div>
         </header>
 
