@@ -61,26 +61,7 @@ export default function MaintenanceOptimization({ devices }) {
   // Automated Scheduler Logic
   // Filter devices that need repair (warning or critical risk level) AND haven't been "fixed" yet
   // We use logs to simulate fixing. If a device has a log entry today, we consider it fixed temporarily for the demo
-  
-  const demoDevices = [
-    {
-      deviceId: 'demo-storage-01',
-      hostname: 'DB-CLUSTER-NODE4',
-      latestPrediction: { riskLevel: 'critical', predictedComponent: 'NVMe SSD', failureProbability: 92, healthScore: 8 }
-    },
-    {
-      deviceId: 'demo-cooling-02',
-      hostname: 'RENDER-FARM-B1',
-      latestPrediction: { riskLevel: 'warning', predictedComponent: 'GPU Cooling Fan', failureProbability: 76, healthScore: 24 }
-    },
-    {
-      deviceId: 'demo-power-03',
-      hostname: 'EXEC-LAPTOP-M2',
-      latestPrediction: { riskLevel: 'warning', predictedComponent: 'Battery Cell 3', failureProbability: 64, healthScore: 36 }
-    }
-  ];
-
-  const combinedDevices = [...(devices || []), ...demoDevices];
+  const combinedDevices = devices || [];
 
   const devicesNeedingMaintenance = combinedDevices.filter(d => {
         if (!d.latestPrediction || (d.latestPrediction.riskLevel !== 'critical' && d.latestPrediction.riskLevel !== 'warning')) return false;
