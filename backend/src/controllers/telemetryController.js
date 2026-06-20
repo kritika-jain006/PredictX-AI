@@ -49,6 +49,17 @@ const receiveTelemetry = async (req, res) => {
             recommendation: recommendations
         });
 
+        // HACKATHON: Simulated Webhook Integration for Nagios/Zabbix/SCOM
+        if (predictionResult.riskLevel === 'critical') {
+            console.log(`[ENTERPRISE WEBHOOK] Firing Critical Alert to Nagios for Device ${req.body.deviceId}`);
+            console.log(`[ENTERPRISE WEBHOOK] Payload: ${JSON.stringify({
+                device: req.body.deviceId,
+                alert_type: "HARDWARE_FAILURE_IMMINENT",
+                root_cause: predictionResult.rootCause,
+                recommendation: recommendations[0] || "Dispatch field technician"
+            })}`);
+        }
+
         try {
             const totalDevices = await Device.countDocuments();
 

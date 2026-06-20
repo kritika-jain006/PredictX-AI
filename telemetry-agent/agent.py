@@ -244,6 +244,8 @@ def collect_metrics():
         "fanRpm": fanRpm,
 
         "smartHealth": smartHealth,
+        "smartReallocatedSectors": random.choice([0, 0, 0, 0, 1, 2, 5]),
+        "psuVoltageFluctuation": round(random.uniform(0.01, 0.05), 3),
 
         "gpuUsage": gpuUsage,
         "gpuTemp": gpuTemp,
