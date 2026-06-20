@@ -5,6 +5,7 @@ const telemetryRoutes = require("./routes/telemetryRoutes");
 const predictionRoutes = require("./routes/predictionRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const historyRoutes = require("./routes/historyRoutes");
+const streamRoutes = require("./routes/streamRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
@@ -20,6 +21,7 @@ app.use("/api/telemetry", telemetryRoutes);
 app.use("/api/predictions", predictionRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/history", historyRoutes);
+app.use("/api/stream", streamRoutes);
 
 // Mock ML Prediction API for simulation and standalone local testing
 app.post("/api/mock-ml", (req, res) => {
