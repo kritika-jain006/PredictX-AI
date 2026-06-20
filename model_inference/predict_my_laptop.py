@@ -105,7 +105,7 @@ while True:
             days_to_fail = "> 365 Days"
         elif fail_prob < 0.70:
             risk_level = "Moderate"
-            days_to_fail = "90 - 180 Days"
+            days_to_fail = "90 - 365 Days"
         elif fail_prob < 0.95:
             risk_level = "High"
             days_to_fail = "30 - 90 Days"
