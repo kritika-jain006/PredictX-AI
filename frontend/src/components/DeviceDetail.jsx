@@ -63,8 +63,8 @@ export default function DeviceDetail({ deviceId, onBack, apiUrl, latestUpdate })
     fetchDeviceData(false); // Initial load with spinner
     
     const interval = setInterval(() => {
-      fetchDeviceData(true); // Background poll every 5 seconds
-    }, 5000);
+      fetchDeviceData(true); // Background poll every 2 seconds for true real-time processing
+    }, 2000);
     
     return () => clearInterval(interval);
   }, [fetchDeviceData]);
@@ -426,11 +426,17 @@ export default function DeviceDetail({ deviceId, onBack, apiUrl, latestUpdate })
           {/* Health Insight Summary */}
           {latestPrediction && (
             <div className={`glass-card ${risk !== 'low' ? 'rec-box ' + risk : ''}`} style={{ margin: 0, padding: '24px' }}>
-              <div className="rec-title" style={{ color: risk === 'critical' ? 'var(--color-danger)' : risk === 'warning' ? 'var(--color-warning)' : 'var(--color-success)' }}>
-                {risk === 'critical' ? <AlertTriangle size={18} /> : risk === 'warning' ? <AlertTriangle size={18} /> : <CheckCircle size={18} />}
-                <span style={{ textTransform: 'lowercase' }}>
-                  ml_assessment :: {risk === 'critical' ? 'urgent_failure_risk' : risk === 'warning' ? (latestPrediction?.healthScore > 40 ? 'moderate_performance_degradation' : 'degraded_performance_warning') : 'system_healthy'}
-                </span>
+              <div className="rec-title" style={{ color: risk === 'critical' ? 'var(--color-danger)' : risk === 'warning' ? 'var(--color-warning)' : 'var(--color-success)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  {risk === 'critical' ? <AlertTriangle size={18} /> : risk === 'warning' ? <AlertTriangle size={18} /> : <CheckCircle size={18} />}
+                  <span style={{ textTransform: 'lowercase' }}>
+                    ml_assessment :: {risk === 'critical' ? 'urgent_failure_risk' : risk === 'warning' ? (latestPrediction?.healthScore > 40 ? 'moderate_performance_degradation' : 'degraded_performance_warning') : 'system_healthy'}
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', display: 'flex', gap: '12px' }}>
+                  {latestPrediction?.processingLatencyMs && <span>⏱️ latency: {latestPrediction.processingLatencyMs}ms</span>}
+                  {latestPrediction?.confidenceScore && <span>🎯 confidence: {latestPrediction.confidenceScore}%</span>}
+                </div>
               </div>
               <div style={{ background: 'rgba(0,0,0,0.15)', padding: '12px', borderRadius: '6px', marginBottom: '16px', borderLeft: '2px solid var(--color-primary)' }}>
                 <p style={{ fontSize: '0.75rem', color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px', fontWeight: 'bold' }}>

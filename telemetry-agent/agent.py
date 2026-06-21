@@ -306,26 +306,42 @@ def collect_metrics():
 
     return data
 
-
-while True:
-
-    payload = collect_metrics()
-
-    print(json.dumps(payload, indent=4))
-
+def set_low_process_priority():
+    """Resource Constraint (3): Ensure agent runs efficiently without lagging the host machine."""
     try:
-        response = requests.post(
-            API_URL,
-            json=payload,
-            timeout=5
-        )
+        p = psutil.Process(os.getpid())
+        if platform.system() == "Windows":
+            p.nice(psutil.BELOW_NORMAL_PRIORITY_CLASS)
+        else:
+            p.nice(10) # Unix nice value
+    except:
+        pass
 
-        print("Status:", response.status_code)
-        print("Response:", response.text)
+if __name__ == "__main__":
+    import os
+    set_low_process_priority()
+    print("🚀 Telemetry Agent Started (Low Resource Mode)")
+    print(f"Targeting: {API_URL}")
 
-    except Exception as e:
-        print("Error:", e)
+    while True:
 
-    print("-" * 50)
+        payload = collect_metrics()
 
-    time.sleep(10)
+        print(json.dumps(payload, indent=4))
+
+        try:
+            response = requests.post(
+                API_URL,
+                json=payload,
+                timeout=5
+            )
+
+            print("Status:", response.status_code)
+            print("Response:", response.text)
+
+        except Exception as e:
+            print("Error:", e)
+
+        print("-" * 50)
+
+        time.sleep(2)
