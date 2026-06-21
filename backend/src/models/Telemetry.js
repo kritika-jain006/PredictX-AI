@@ -25,6 +25,10 @@ const telemetrySchema = new mongoose.Schema({
 
     smartHealth: Number,
 
+    smartReallocatedSectors: Number,
+
+    psuVoltageFluctuation: Number,
+
     gpuUsage: Number,
 
     gpuTemp: Number,
