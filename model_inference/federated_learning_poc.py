@@ -30,6 +30,13 @@ print("\n[SECURITY] Partitioning data to simulate isolated organizational networ
 X_temp, X_global_test, y_temp, y_global_test = train_test_split(features, target, test_size=0.20, random_state=42)
 X_org_a, X_org_b, y_org_a, y_org_b = train_test_split(X_temp, y_temp, test_size=0.50, random_state=42)
 
+# 3.5 Scale Features (CRITICAL for SMOTE because it relies on KNN distances)
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_org_a = scaler.fit_transform(X_org_a)
+X_org_b = scaler.fit_transform(X_org_b)
+X_global_test = scaler.fit_transform(X_global_test)
+
 print(f"  -> Org A (Bank) Training Data: {len(X_org_a)} records")
 print(f"  -> Org B (Hospital) Training Data: {len(X_org_b)} records")
 print(f"  -> Global Test Set (Central Server): {len(X_global_test)} records")
