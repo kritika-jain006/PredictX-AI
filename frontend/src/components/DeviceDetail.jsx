@@ -572,6 +572,63 @@ export default function DeviceDetail({ deviceId, onBack, apiUrl, latestUpdate })
         </div>
       </div>
 
+      {/* Cascade Chain Analysis */}
+      {latestPrediction && latestPrediction.cascadeChain && latestPrediction.cascadeChain.length > 0 && (
+        <div className="glass-card" style={{ marginBottom: '24px' }}>
+          <div className="chart-header" style={{ marginBottom: '20px' }}>
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 600, color: '#fff' }}>
+              cross_correlation :: failure_cascade_analysis
+            </h3>
+            <span style={{ fontSize: '0.75rem', color: 'var(--color-danger)', fontFamily: 'var(--font-mono)', background: 'var(--color-danger-glow)', padding: '2px 8px', borderRadius: '2px' }}>
+              {latestPrediction.cascadeChain.length} stage cascade detected
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'stretch', gap: '0', overflowX: 'auto', paddingBottom: '8px' }}>
+            {latestPrediction.cascadeChain.map((step, idx) => (
+              <div key={idx} style={{ display: 'flex', alignItems: 'center', flex: '1', minWidth: '160px' }}>
+                <div style={{
+                  flex: 1,
+                  padding: '16px',
+                  background: step.risk === 'critical' ? 'rgba(240,74,74,0.08)' : 'rgba(255,176,32,0.08)',
+                  border: `1px solid ${step.risk === 'critical' ? 'var(--color-danger)' : 'var(--color-warning)'}`,
+                  borderRadius: '6px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '6px'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                      step_{step.step}
+                    </span>
+                    <span style={{
+                      fontSize: '0.6rem', padding: '1px 6px', borderRadius: '2px', fontWeight: 700, textTransform: 'uppercase',
+                      background: step.risk === 'critical' ? 'var(--color-danger-glow)' : 'var(--color-warning-glow)',
+                      color: step.risk === 'critical' ? 'var(--color-danger)' : 'var(--color-warning)'
+                    }}>
+                      {step.risk}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fff', textTransform: 'lowercase' }}>
+                    {step.component.toLowerCase()}
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: '1.4', textTransform: 'lowercase' }}>
+                    {step.description.toLowerCase()}
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '4px' }}>
+                    ⏱ {step.timeframe.toLowerCase()}
+                  </div>
+                </div>
+                {idx < latestPrediction.cascadeChain.length - 1 && (
+                  <div style={{ padding: '0 8px', color: 'var(--color-danger)', fontSize: '1.2rem', fontWeight: 'bold', flexShrink: 0 }}>
+                    →
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Historical Trend Charts */}
       {sortedTelemetry.length > 0 && (
         <div className="detail-charts-grid">

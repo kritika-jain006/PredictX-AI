@@ -119,7 +119,7 @@ const formatLastUpdated = (ts) => {
 /* ─────────────────────────────────────────────────────────
    Sub-component: Inline Device Detail Panel
 ───────────────────────────────────────────────────────── */
-function DeviceDetailPanel({ device, onClose }) {
+function DeviceDetailPanel({ device, onClose, onViewAnalytics }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const score  = getRiskScore(device);
   const color  = riskColor(score);
@@ -198,14 +198,23 @@ function DeviceDetailPanel({ device, onClose }) {
             </div>
           </div>
         </div>
-        <button
-          className="btn btn-secondary"
-          style={{ padding: '6px 8px' }}
-          onClick={onClose}
-          aria-label="close panel"
-        >
-          <X size={14} />
-        </button>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button
+            className="btn btn-primary"
+            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+            onClick={onViewAnalytics}
+          >
+            View Analytics
+          </button>
+          <button
+            className="btn btn-secondary"
+            style={{ padding: '6px 8px' }}
+            onClick={onClose}
+            aria-label="close panel"
+          >
+            <X size={14} />
+          </button>
+        </div>
       </div>
 
       {/* Body */}
@@ -559,6 +568,7 @@ export default function DeviceList({ devices, onSelectDevice }) {
         <DeviceDetailPanel
           device={selectedDevice}
           onClose={() => setSelectedId(null)}
+          onViewAnalytics={() => { onSelectDevice(selectedDevice.deviceId); setSelectedId(null); }}
         />
       )}
     </div>

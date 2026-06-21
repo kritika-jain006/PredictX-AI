@@ -21,6 +21,16 @@ const predictionSchema = new mongoose.Schema({
 
     recommendation: [String],
 
+    cascadeChain: [
+        {
+            step: Number,
+            component: String,
+            risk: String,
+            description: String,
+            timeframe: String
+        }
+    ],
+
     timestamp: {
         type: Date,
         default: Date.now

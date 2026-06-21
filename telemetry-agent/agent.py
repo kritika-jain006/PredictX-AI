@@ -303,7 +303,9 @@ def collect_metrics():
 
         "timestamp": datetime.now(timezone.utc)
         .isoformat()
-        .replace("+00:00", "Z")
+        .replace("+00:00", "Z"),
+
+        "orgId": ORG_ID
     }
 
     return data

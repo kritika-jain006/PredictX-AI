@@ -6,6 +6,7 @@ const crypto = require('crypto');
 
 const { getPrediction } = require("../services/mlService");
 const { generateRecommendation } = require("../services/recommendationService");
+const { analyzeCascade } = require("../services/cascadeService");
 
 const receiveTelemetry = async (req, res) => {
     try {
@@ -81,6 +82,9 @@ const receiveTelemetry = async (req, res) => {
 
         const recommendations = generateRecommendation(predictionResult);
 
+        // Cascade cross-correlation analysis
+        const cascadeChain = analyzeCascade(req.body);
+
         const prediction = await Prediction.create({
             deviceId: processedDeviceId,
             healthScore: predictionResult.healthScore,
@@ -89,7 +93,8 @@ const receiveTelemetry = async (req, res) => {
             predictedComponent: predictionResult.predictedComponent,
             rootCause: predictionResult.rootCause,
             estimatedFailureWindow: predictionResult.estimatedFailureWindow,
-            recommendation: recommendations
+            recommendation: recommendations,
+            cascadeChain: cascadeChain || []
         });
 
         // HACKATHON: Simulated Webhook Integration for Nagios/Zabbix/SCOM
