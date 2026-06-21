@@ -11,7 +11,7 @@ export default function Diagnostics({ apiUrl }) {
     setIsRunning(true);
     setDiagnostics(null);
     try {
-      const response = await fetch(`${apiUrl}/api/dashboard/diagnostics`);
+      const response = await fetch(`${apiUrl}/dashboard/diagnostics`);
       const data = await response.json();
       setDiagnostics(data);
       setLastRun(new Date().toLocaleTimeString());
