@@ -67,6 +67,10 @@ def auto_detect_hardware():
         "temp": c_temp
     }
 
+@app.get("/")
+def health_check():
+    return {"status": "ok", "message": "ML Engine online"}
+
 @app.post("/predict")
 def predict_hardware_health(payload: TelemetryPayload):
     # Use provided values OR auto-detect if None

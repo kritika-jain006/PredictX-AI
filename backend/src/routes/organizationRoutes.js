@@ -69,11 +69,11 @@ router.post("/verify", async (req, res) => {
                 }
             });
 
-            // Seed 3 mock devices for the demo
+            // Seed 3 mock devices for the demo matching the user's local dataset
             const mockDevices = [
-                { id: "XPS-15-FRIEND", type: "Laptop", os: "Windows 11", risk: "low", msg: "System operating normally" },
-                { id: "LATITUDE-SERVER-1", type: "Server", os: "Ubuntu 22.04", risk: "warning", msg: "High memory utilization detected" },
-                { id: "PRECISION-LAB-9", type: "Workstation", os: "Windows 10", risk: "critical", msg: "Impending thermal failure on GPU" }
+                { id: "DELL-DEV-001", type: "Laptop", os: "Windows 11", risk: "Low", msg: "System operating normally", root: "None", comp: "None", ttf: "Stable", score: 98, rec: ["Standard regular maintenance."] },
+                { id: "DELL-DEV-002", type: "Server", os: "Ubuntu 22.04", risk: "Warning", msg: "High memory utilization detected", root: "Memory Paging / Thrashing", comp: "RAM", ttf: "7 - 30 Days", score: 65, rec: ["Investigate memory leak", "Upgrade RAM capacity"] },
+                { id: "DELL-DEV-003", type: "Workstation", os: "Windows 10", risk: "Critical", msg: "Impending thermal failure on GPU", root: "Critical Thermal Throttling", comp: "GPU", ttf: "1 - 7 Days", score: 12, rec: ["IMMEDIATE ACTION: Device is dangerously overheating."] }
             ];
 
             for (const d of mockDevices) {
@@ -81,15 +81,23 @@ router.post("/verify", async (req, res) => {
                     deviceId: d.id,
                     orgId: 'dell-hackathon-2026',
                     deviceType: d.type,
-                    osVersion: d.os
+                    osVersion: d.os,
+                    manufacturer: 'Dell',
+                    model: d.id,
+                    cpu: 'Intel Core i7-12700H',
+                    ram: '16 GB',
+                    storage: '512 GB NVMe SSD'
                 });
 
                 await Prediction.create({
                     deviceId: d.id,
-                    riskScore: d.risk === 'low' ? 12 : d.risk === 'warning' ? 65 : 92,
+                    healthScore: d.score,
                     riskLevel: d.risk,
-                    anomalies: [d.msg],
-                    recommendation: "Review system logs"
+                    failureProbability: (100 - d.score) / 100,
+                    rootCause: d.root,
+                    predictedComponent: d.comp,
+                    estimatedFailureWindow: d.ttf,
+                    recommendation: d.rec
                 });
             }
         }
