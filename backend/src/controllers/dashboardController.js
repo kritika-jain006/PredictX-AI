@@ -4,6 +4,8 @@ const Prediction = require("../models/Prediction");
 const mongoose = require("mongoose");
 const axios = require("axios");
 
+const ML_API = process.env.ML_API;
+
 // GET /api/dashboard/summary - overall system summary
 const getDashboardSummary = async (req, res) => {
     try {
@@ -157,12 +159,38 @@ const runDiagnostics = async (req, res) => {
 
         // 3. ML API check
         const mlStart = Date.now();
-        try {
-            await axios.get('http://localhost:8000/');
-            diagnostics.ml_api = { status: 'ok', latency: Date.now() - mlStart, message: 'FastAPI ML Engine online' };
-        } catch (err) {
-            diagnostics.ml_api = { status: 'error', message: 'ML API unreachable (Port 8000)' };
-        }
+
+try {
+    await axios.post(ML_API, {
+        cpuUsage: 10,
+        cpuTemp: 40,
+        ramUsage: 30,
+        ramCapacityGB: 8,
+        diskUsage: 20,
+        diskReadMBps: 1,
+        diskWriteMBps: 1,
+        processCount: 100,
+        osVersion: "Windows",
+        batteryHealth: 90,
+        cpuPower: 15,
+        batteryPower: 0,
+        fanRpm: 1500,
+        smartHealth: 99,
+        gpuUsage: 20,
+        gpuTemp: 45
+    });
+
+    diagnostics.ml_api = {
+        status: "ok",
+        latency: Date.now() - mlStart,
+        message: "FastAPI ML Engine online"
+    };
+} catch (err) {
+    diagnostics.ml_api = {
+        status: "error",
+        message: "ML API unreachable"
+    };
+}
 
         // 4. Telemetry check (did we receive anything in the last 60 seconds?)
         const oneMinuteAgo = new Date(Date.now() - 60 * 1000);
