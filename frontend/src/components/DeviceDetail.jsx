@@ -496,6 +496,18 @@ export default function DeviceDetail({ deviceId, onBack, apiUrl, latestUpdate })
                   <span className="w-label">battery</span>
                   <span className="w-value">{current.batteryHealth}%</span>
                 </div>
+                {current.psuVoltageFluctuation !== undefined && (
+                  <div className={`widget-card`} style={{ background: `rgba(245, 158, 11, 0.15)` }}>
+                    <span className="w-label">cpu_vrm_voltage</span>
+                    <span className="w-value">{current.psuVoltageFluctuation.toFixed(3)} v</span>
+                  </div>
+                )}
+                {current.smartReallocatedSectors !== undefined && (
+                  <div className={`widget-card`} style={{ background: `rgba(239, 68, 68, ${current.smartReallocatedSectors > 0 ? 0.3 : 0.05})` }}>
+                    <span className="w-label">smart_sectors</span>
+                    <span className="w-value">{current.smartReallocatedSectors}</span>
+                  </div>
+                )}
               </div>
             ) : (
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '12px', textTransform: 'lowercase' }}>no telemetry data submitted yet.</p>
