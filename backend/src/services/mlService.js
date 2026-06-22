@@ -69,7 +69,8 @@ const getPrediction = async (telemetry) => {
                 confidenceScore,
                 anomalyScore: diag.anomaly_score !== undefined ? diag.anomaly_score : 0.0,
                 anomalyAlert: !!diag.anomaly_alert,
-                explainableReasons: diag.shap_reasons || []
+                explainableReasons: diag.shap_reasons || [],
+                recommendation: diag.prescriptive_actions || []
             };
         }
     } catch (error) {
@@ -159,6 +160,13 @@ const getPrediction = async (telemetry) => {
         "Power / Battery": `Detected PSU voltage fluctuation of ${psuVoltageFluctuation}V and battery health ${batteryHealth}%. Power delivery degradation.`,
         "Cooling / Fan":   `Fan running at ${fanRpm} RPM. Cooling performance may be insufficient.`,
     };
+
+    const fallbackPrescriptiveActionsMap = {
+        "Thermal / CPU":   ["Run automated thermal diagnostic", "Clean internal dust from heat sinks and vents", "Re-apply thermal paste to CPU/GPU"],
+        "Storage / Disk":  ["Trigger immediate emergency data backup", "Order replacement NVMe SSD", "Swap drive and restore OS image"],
+        "Power / Battery": ["Verify battery cycle count via diagnostics", "Order OEM replacement battery", "Schedule 30-min downtime window for swap"],
+        "Cooling / Fan":   ["Run automated thermal diagnostic", "Clean internal dust from heat sinks and vents", "Verify fan operation and replace if necessary"],
+    };
     const rootCause = riskLevel === "low"
         ? "All subsystems within normal operating parameters."
         : (rootCauseMap[worst.name] || "Multiple subsystems showing elevated risk.");
@@ -197,7 +205,8 @@ const getPrediction = async (telemetry) => {
         confidenceScore,
         anomalyScore: fallbackAnomalyScore,
         anomalyAlert: fallbackAnomalyAlert,
-        explainableReasons: riskLevel === "low" ? [] : [rootCauseMap[worst.name] || "Subsystem showing elevated risk"]
+        explainableReasons: riskLevel === "low" ? [] : [rootCauseMap[worst.name] || "Subsystem showing elevated risk"],
+        recommendation: riskLevel === "low" ? [] : (fallbackPrescriptiveActionsMap[worst.name] || ["Run full system hardware diagnostic test"])
     };
 };
 

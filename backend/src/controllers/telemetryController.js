@@ -81,7 +81,9 @@ const receiveTelemetry = async (req, res) => {
         device.status = predictionResult.riskLevel === 'low' ? 'healthy' : predictionResult.riskLevel;
         await device.save();
 
-        const recommendations = generateRecommendation(predictionResult);
+        const recommendations = predictionResult.recommendation && predictionResult.recommendation.length > 0 
+            ? predictionResult.recommendation 
+            : generateRecommendation(predictionResult);
 
         // Cascade cross-correlation analysis
         const cascadeChain = analyzeCascade(req.body);
