@@ -32,7 +32,7 @@ python -m venv venv
 # Mac/Linux: source venv/bin/activate
 pip install -r requirements.txt
 cd model_inference
-uvicorn api:app --reload
+uvicorn api:app --reload  or  api.py
 ```
 *Runs on `http://localhost:8000`*
 
