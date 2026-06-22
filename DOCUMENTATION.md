@@ -12,11 +12,12 @@ predicts failure probability, and displays everything on a live dashboard.
 
 | Module | Who |
 |--------|-----|
-| Backend (Node.js + MongoDB) | Dhriti |
-| Frontend (React Dashboard) | Dhriti |
-| Mobile App (React Native) | Dhriti |
+| Backend (Node.js + MongoDB) | Kritika & Dhriti |
+| Frontend (React Dashboard) | Palak & Dhriti |
+| Mobile App (React Native) | Suhani |
 | Telemetry Agent (Python) | Shinjineedheer036 |
-| ML Model + FastAPI | Shinjineedheer036 / ML teammate |
+| ML Model + FastAPI | Suhani |
+| Federated Learning PoC | Suhani |
 
 ---
 
