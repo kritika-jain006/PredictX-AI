@@ -46,7 +46,7 @@ python model_inference/federated_learning_poc.py
 ```bash
 cd backend
 npm install
-node server.js
+npm run dev
 ```
 *Runs on `http://localhost:5000`*
 
