@@ -38,8 +38,8 @@ export default function OverviewScreen({ navigation }) {
     alert("Simulation injected! Switch to the Devices tab to see it.");
   };
 
-  const criticalCount = devices.filter(d => d.prediction?.riskLevel === 'Critical').length;
-  const warningCount = devices.filter(d => d.prediction?.riskLevel === 'Warning').length;
+  const criticalCount = devices.filter(d => (d.latestPrediction || d.prediction)?.riskLevel === 'Critical').length;
+  const warningCount = devices.filter(d => (d.latestPrediction || d.prediction)?.riskLevel === 'Warning').length;
   const stableCount = devices.length - criticalCount - warningCount;
 
   if (loading && !refreshing) {

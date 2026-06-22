@@ -3,21 +3,29 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function SystemAlertsWidget({ devices = [], navigation }) {
   const activeAlerts = devices
-    .filter(d => d.prediction && d.prediction.riskLevel && d.prediction.riskLevel !== 'low' && d.prediction.riskLevel !== 'Stable')
+    .filter(d => {
+       const pred = d.latestPrediction || d.prediction;
+       return pred && pred.riskLevel && pred.riskLevel !== 'low' && pred.riskLevel !== 'Stable';
+    })
     .sort((a, b) => {
-       if (a.prediction.riskLevel === 'Critical' && b.prediction.riskLevel !== 'Critical') return -1;
-       if (b.prediction.riskLevel === 'Critical' && a.prediction.riskLevel !== 'Critical') return 1;
+       const predA = a.latestPrediction || a.prediction;
+       const predB = b.latestPrediction || b.prediction;
+       if (predA.riskLevel === 'Critical' && predB.riskLevel !== 'Critical') return -1;
+       if (predB.riskLevel === 'Critical' && predA.riskLevel !== 'Critical') return 1;
        return 0;
     })
-    .map(d => ({
-      id: d.deviceId,
-      device: `(${d.model || d.os || 'unknown'})`,
-      time: d.prediction.timestamp ? new Date(d.prediction.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Live',
-      prob: d.prediction.failureProbability ? `${Math.round(d.prediction.failureProbability)}%` : 'N/A',
-      component: d.prediction.predictedComponent || 'unknown',
-      risk: d.prediction.riskLevel,
-      originalDevice: d
-    }));
+    .map(d => {
+      const pred = d.latestPrediction || d.prediction;
+      return {
+        id: d.deviceId,
+        device: `(${d.model || d.os || 'unknown'})`,
+        time: pred.timestamp ? new Date(pred.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Live',
+        prob: pred.failureProbability ? `${Math.round(pred.failureProbability)}%` : 'N/A',
+        component: pred.predictedComponent || 'unknown',
+        risk: pred.riskLevel,
+        originalDevice: d
+      };
+    });
 
   if (activeAlerts.length === 0) {
     return null;

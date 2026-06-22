@@ -5,8 +5,9 @@ export default function FailureDistributionWidget({ devices = [] }) {
   const counts = { cooling: 0, storage: 0, power: 0 };
   
   devices.forEach(d => {
-    if (d.prediction && (d.prediction.riskLevel === 'Warning' || d.prediction.riskLevel === 'Critical')) {
-      let comp = (d.prediction.predictedComponent || '').toLowerCase();
+    const pred = d.latestPrediction || d.prediction;
+    if (pred && (pred.riskLevel === 'Warning' || pred.riskLevel === 'Critical')) {
+      let comp = (pred.predictedComponent || '').toLowerCase();
       if (comp.includes('cooling') || comp.includes('fan')) counts.cooling++;
       else if (comp.includes('storage') || comp.includes('disk')) counts.storage++;
       else if (comp.includes('power') || comp.includes('psu') || comp.includes('battery')) counts.power++;
