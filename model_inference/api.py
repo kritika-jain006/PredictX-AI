@@ -210,7 +210,11 @@ def predict_hardware_health(payload: TelemetryPayload):
                 'gpuTemp': 'High GPU Temperature',
                 'cpu_gpu_load_ratio': 'CPU-GPU Load Imbalance',
                 'temp_power_ratio_cpu': 'Inefficient Power-to-Temp Ratio',
-                'disk_activity_score': 'Intensive Disk I/O Thrashing'
+                'disk_activity_score': 'Intensive Disk I/O Thrashing',
+                'lastMaintenanceDays': 'Overdue for Maintenance',
+                'lastmaintenancedays': 'Overdue for Maintenance',
+                'fanCleaned': 'Dust Accumulation (Fan)',
+                'fancleaned': 'Dust Accumulation (Fan)'
             }
             
             for feat, val in positive_contributors[:3]:

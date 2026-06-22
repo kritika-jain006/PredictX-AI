@@ -28,7 +28,18 @@ const getDashboardSummary = async (req, res) => {
             if (p.riskLevel !== "low" && p.explainableReasons && Array.isArray(p.explainableReasons)) {
                 p.explainableReasons.forEach(reason => {
                     // Extract the core reason, e.g., "Battery Degradation" from "Battery Degradation (+11.8% risk factor)"
-                    const cleanReason = reason.split(' (+')[0].trim();
+                    let cleanReason = reason.split(' (+')[0].trim();
+                    const reasonMap = {
+                        "lastmaintenancedays": "Overdue for Maintenance",
+                        "lastMaintenanceDays": "Overdue for Maintenance",
+                        "fancleaned": "Dust Accumulation (Fan)",
+                        "fanCleaned": "Dust Accumulation (Fan)"
+                    };
+                    if (reasonMap[cleanReason]) {
+                        cleanReason = reasonMap[cleanReason];
+                    } else if (reasonMap[cleanReason.toLowerCase()]) {
+                        cleanReason = reasonMap[cleanReason.toLowerCase()];
+                    }
                     reasonCounts[cleanReason] = (reasonCounts[cleanReason] || 0) + 1;
                 });
             }
