@@ -17,6 +17,7 @@ predicts failure probability, and displays everything on a live dashboard.
 | Mobile App (React Native) | Dhriti |
 | Telemetry Agent (Python) | Shinjineedheer036 |
 | ML Model + FastAPI | Shinjineedheer036 / ML teammate |
+| Federated Learning PoC | Tech Elite Team |
 
 ---
 
