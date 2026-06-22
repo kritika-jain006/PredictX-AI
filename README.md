@@ -60,11 +60,11 @@ npm run dev
 *Runs on `http://localhost:5173`*
 
 ### 5. Mobile App (React Native)
-A fully-featured mobile application built with Expo, matching the web dashboard's hacker aesthetic and providing live telemetry to admins on the go.
+A fully-featured mobile application built with Expo, matching the web dashboard's hacker aesthetic and providing live telemetry to admins on the go.  
 ```bash
 cd mobile-app
 npm install
-npx expo start -c
+npm start 
 ```
 *Runs via Expo Go on Android/iOS*
 
