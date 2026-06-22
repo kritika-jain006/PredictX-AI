@@ -250,9 +250,12 @@ PredictX-AI fundamentally transforms IT infrastructure management from a **React
 ---
 
 ## 14. Future Enhancements & Roadmap
-While the current PredictX-AI platform is production-ready, our roadmap includes an important automated business feature:
+While the current PredictX-AI platform is production-ready, our roadmap focuses on moving from predictive to autonomous operations:
 
-1. **Automated Procurement Workflow:** Integrating the `recommendationService` with ERP systems (like SAP or ServiceNow) to automatically order replacement RAM or Storage drives the moment a 30-day failure prediction is triggered.
+1. **Generative AI "IT Co-Pilot" (LLM Integration):** Integrating an enterprise-grade LLM into the dashboard, allowing IT administrators to query hardware telemetry using natural language (e.g., *"Which Dell servers are most likely to experience thermal throttling this week?"*).
+2. **Autonomous Self-Healing Infrastructure:** Transitioning from simple alerts to automated remediation. For example, if a physical server is predicted to fail, the system will automatically migrate critical Virtual Machines (VMs) to a healthy node before the hardware crashes.
+3. **Automated Procurement Workflow:** Integrating the `recommendationService` with ERP systems (like SAP or ServiceNow) to automatically order replacement RAM or Storage drives the moment a 30-day failure prediction is triggered.
+4. **Data Center Digital Twins:** Moving beyond 2D dashboards by rendering live 3D "Digital Twins" of server racks to visually map thermal gradients and hardware health across physical data centers.
 
 ---
 ## 15. Conclusion
