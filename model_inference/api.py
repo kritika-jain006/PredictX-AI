@@ -141,37 +141,37 @@ def predict_hardware_health(payload: TelemetryPayload):
 
     root_cause = "Unknown"
     pred_component = "Unknown"
-    recommendation = "Standard regular maintenance."
+    prescriptive_actions = []
 
     if temp > 95.0:
         root_cause = "Critical Thermal Throttling"
         pred_component = "CPU"
-        recommendation = "IMMEDIATE ACTION: Device is dangerously overheating. Reduce workload to prevent damage."
+        prescriptive_actions = ["Run automated thermal diagnostic", "Clean internal dust from heat sinks and vents", "Re-apply thermal paste to CPU/GPU"]
     elif temp > 85.0 and input_data['cpuUsage'] < 40.0:
         root_cause = "Cooling System Failure"
         pred_component = "Fan / Heatsink"
-        recommendation = "ACTION: High temperature under low CPU load detected! Clean fan vents or replace thermal paste."
+        prescriptive_actions = ["Run automated thermal diagnostic", "Clean internal dust from heat sinks and vents", "Re-apply thermal paste to CPU/GPU"]
     elif bat < 50.0:
         root_cause = "Battery Degradation"
         pred_component = "Battery"
-        recommendation = "WARNING: Battery capacity is critically low."
+        prescriptive_actions = ["Verify battery cycle count via diagnostics", "Order OEM replacement battery", "Schedule 30-min downtime window for swap"]
     elif d_read < 10.0 and d_write < 10.0 and fail_prob > 0.4:
         root_cause = "I/O Stalling"
         pred_component = payload.disk_type.upper()
-        recommendation = "ACTION: Read/write speeds are degraded. Backup your data immediately."
+        prescriptive_actions = ["Trigger immediate emergency data backup", "Order replacement NVMe SSD", "Swap drive and restore OS image"]
     elif ram < 8.0 and procs > 200:
         root_cause = "Memory Paging / Thrashing"
         pred_component = "RAM / OS"
-        recommendation = "ACTION: Too many active processes for available RAM."
+        prescriptive_actions = ["Run Windows Memory Diagnostic tool", "Identify and terminate memory-leaking background processes", "Consider RAM upgrade if swap usage remains high"]
     else:
         if risk_level in ["High", "Critical"]:
             root_cause = "General Wear & Tear"
             pred_component = "Motherboard / Generic"
-            recommendation = "ACTION: Severe failure signals detected. Full diagnostic recommended."
+            prescriptive_actions = ["Run full system hardware diagnostic test", "Schedule maintenance window for physical inspection", "Review system event logs for detailed errors"]
         else:
             root_cause = "None"
             pred_component = "None"
-            recommendation = "System is operating within healthy parameters."
+            prescriptive_actions = []
 
     # System Lag Detection Heuristics
     is_lagging = False
@@ -210,7 +210,11 @@ def predict_hardware_health(payload: TelemetryPayload):
                 'gpuTemp': 'High GPU Temperature',
                 'cpu_gpu_load_ratio': 'CPU-GPU Load Imbalance',
                 'temp_power_ratio_cpu': 'Inefficient Power-to-Temp Ratio',
-                'disk_activity_score': 'Intensive Disk I/O Thrashing'
+                'disk_activity_score': 'Intensive Disk I/O Thrashing',
+                'lastMaintenanceDays': 'Overdue for Maintenance',
+                'lastmaintenancedays': 'Overdue for Maintenance',
+                'fanCleaned': 'Dust Accumulation (Fan)',
+                'fancleaned': 'Dust Accumulation (Fan)'
             }
             
             for feat, val in positive_contributors[:3]:
@@ -245,7 +249,7 @@ def predict_hardware_health(payload: TelemetryPayload):
             "estimated_failure_window": days_to_fail,
             "system_lagging": is_lagging,
             "lag_reason": lag_reason,
-            "recommendation": recommendation,
+            "prescriptive_actions": prescriptive_actions,
             "shap_reasons": shap_reasons
         }
     }

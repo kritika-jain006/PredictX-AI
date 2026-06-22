@@ -13,7 +13,7 @@ print("==================================================")
 
 # 1. Load Data
 try:
-    df = pd.read_csv('Dataset/ai4i2020.csv')
+    df = pd.read_csv('../Dataset/ai4i2020.csv')
     print("[SYSTEM] Successfully loaded AI4I telemetry dataset.")
 except Exception as e:
     print(f"[ERROR] Could not load dataset: {e}")
@@ -22,7 +22,7 @@ except Exception as e:
 # 2. Preprocess Data
 features = df.drop(columns=['UDI', 'Product ID', 'Type', 'Machine failure', 'TWF', 'HDF', 'PWF', 'OSF', 'RNF'])
 import re
-features = features.rename(columns=lambda x: re.sub('[\[\]<>]', '', x))
+features = features.rename(columns=lambda x: re.sub(r'[\[\]<>]', '', x))
 target = df['Machine failure']
 
 # 3. Partition Data into Org A, Org B, and Global Test Set
@@ -37,8 +37,8 @@ X_org_a = scaler.fit_transform(X_org_a)
 X_org_b = scaler.fit_transform(X_org_b)
 X_global_test = scaler.fit_transform(X_global_test)
 
-print(f"  -> Org A (Bank) Training Data: {len(X_org_a)} records")
-print(f"  -> Org B (Hospital) Training Data: {len(X_org_b)} records")
+print(f"  -> Org A (IT 1) Training Data: {len(X_org_a)} records")
+print(f"  -> Org B (IT 2) Training Data: {len(X_org_b)} records")
 print(f"  -> Global Test Set (Central Server): {len(X_global_test)} records")
 
 # 4. Handle Imbalance Locally (SMOTE)
@@ -52,11 +52,11 @@ print("\n==================================================")
 print("LOCAL TRAINING Phase")
 print("==================================================")
 
-print("[Org A] Training local XGBoost model exclusively on Bank data...")
+print("[Org A] Training local XGBoost model exclusively on IT 1 data...")
 model_a = XGBClassifier(n_estimators=300, max_depth=10, learning_rate=0.1, random_state=42, use_label_encoder=False, eval_metric='logloss')
 model_a.fit(X_org_a_res, y_org_a_res)
 
-print("[Org B] Training local XGBoost model exclusively on Hospital data...")
+print("[Org B] Training local XGBoost model exclusively on IT 2 data...")
 model_b = XGBClassifier(n_estimators=300, max_depth=10, learning_rate=0.1, random_state=42, use_label_encoder=False, eval_metric='logloss')
 model_b.fit(X_org_b_res, y_org_b_res)
 
@@ -102,8 +102,8 @@ def evaluate_model(model_name, model, X_test, y_test):
     print(f"Recall:    {rec*100:.2f}%")
     print(f"F1-Score:  {f1*100:.2f}%\n")
 
-evaluate_model("Org A Local Model (Trained ONLY on Bank Data)", model_a, X_global_test, y_global_test)
-evaluate_model("Org B Local Model (Trained ONLY on Hospital Data)", model_b, X_global_test, y_global_test)
+evaluate_model("Org A Local Model (Trained ONLY on IT 1 Data)", model_a, X_global_test, y_global_test)
+evaluate_model("Org B Local Model (Trained ONLY on IT 2 Data)", model_b, X_global_test, y_global_test)
 evaluate_model("Global Federated Model (Combined Intelligence)", global_federated_model, X_global_test, y_global_test)
 
 print("==================================================")
