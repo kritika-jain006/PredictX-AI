@@ -257,6 +257,6 @@ PredictX-AI successfully demonstrates that shifting from reactive monitoring to 
 ---
 **Repository & Setup:**
 * **GitHub Repository:** [PredictX-AI on GitHub](https://github.com/Suhani-prog-alt/PredictX-AI)
-* **Team:** [Insert Team Name Here]
+* **Team SYNTAX_SQUADIIIIES:** Shrinjnee Dheer, Kritika Jain, Dhriti Tandon, Suhani, Palak Agarwal
 
-*Developed for the Dell Hackathon 2026*
+*Developed for the Dell FutureMinds AI Hackathon 2026*
