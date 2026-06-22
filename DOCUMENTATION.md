@@ -12,8 +12,8 @@ predicts failure probability, and displays everything on a live dashboard.
 
 | Module | Who |
 |--------|-----|
-| Backend (Node.js + MongoDB) | Kritika |
-| Frontend (React Dashboard) | Palak |
+| Backend (Node.js + MongoDB) | Kritika & Dhriti |
+| Frontend (React Dashboard) | Palak & Dhriti |
 | Mobile App (React Native) | Suhani |
 | Telemetry Agent (Python) | Shinjineedheer036 |
 | ML Model + FastAPI | Suhani |
