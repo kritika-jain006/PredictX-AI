@@ -72,7 +72,7 @@ npm start
 To stream live data from your local machine to the dashboard:
 ```bash
 pip install psutil requests
-python agent.py
+python -u agent.py
 ```
 
 ## 📊 Evaluation & Success Metrics
